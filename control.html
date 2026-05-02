@@ -599,19 +599,116 @@
   }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
-  /* ── RESPONSIVE ── */
+  /* ── NAV HAMBURGER ── */
+  .nav-hamburger {
+    display: none;
+    background: none; border: 1px solid var(--border-mid);
+    color: var(--gold); font-size: 1.3rem;
+    width: 36px; height: 36px;
+    cursor: pointer; align-items: center; justify-content: center;
+    flex-shrink: 0; border-radius: 3px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .nav-hamburger:hover { border-color: var(--gold); background: rgba(240,192,64,0.07); }
+
+  .nav-drawer {
+    display: none;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(8,12,8,0.97);
+    z-index: 200;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 2rem;
+  }
+  .nav-drawer.open { display: flex; }
+  .nav-drawer a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 4px;
+    color: var(--text); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-drawer a:hover { color: var(--gold); }
+  .nav-drawer-close {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    background: none; border: none; color: var(--muted);
+    font-size: 2rem; cursor: pointer; line-height: 1;
+  }
+
+  /* ── RESPONSIVE — TABLET (≤ 860px) ── */
   @media (max-width: 860px) {
     nav ul { display: none; }
     nav { padding: 1rem 1.5rem; }
+    .nav-hamburger { display: flex; }
+    .status-pill span { display: none; }   /* keep dot, hide text label */
+
     .page-header { padding: 7rem 1.5rem 2rem; }
-    .ctrl-wrap { padding: 1.5rem; grid-template-columns: 1fr; gap: 1.2rem; }
-    .telem-bar { grid-template-columns: repeat(3,1fr); }
+
+    .ctrl-wrap {
+      padding: 1.5rem;
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+
+    /* telemetry: 3 cols per row */
+    .telem-bar { grid-template-columns: repeat(3, 1fr); }
+
+    /* dpad fills full width, centered */
     .card-dpad { grid-row: span 1; }
+    .dpad-grid { max-width: 280px; }
+
+    /* area sweep & log go full width */
+    .card[style*="grid-column: 1"],
+    .card[style*="grid-column: 2"] { grid-column: 1 !important; }
+
     footer { flex-direction: column; gap: 1rem; text-align: center; }
   }
-  @media (max-width: 480px) {
-    .telem-bar { grid-template-columns: 1fr 1fr 1fr; }
-    .dpad-grid { max-width: 210px; }
+
+  /* ── RESPONSIVE — MOBILE (≤ 540px) ── */
+  @media (max-width: 540px) {
+    nav { padding: 0.8rem 1rem; }
+    .logo { font-size: 1.4rem; letter-spacing: 2px; }
+
+    .page-header { padding: 6rem 1rem 1.5rem; }
+    .page-title  { font-size: clamp(2.5rem, 12vw, 4rem); }
+    .page-sub    { font-size: 0.82rem; }
+
+    .ctrl-wrap { padding: 1rem; gap: 1rem; }
+
+    /* telemetry: 2 cols, signal+battery wrap to second row */
+    .telem-bar { grid-template-columns: repeat(2, 1fr); }
+    .telem-cell { padding: 0.9rem 0.8rem; }
+    .telem-value { font-size: 1.2rem; }
+    .telem-label { font-size: 0.55rem; letter-spacing: 2px; }
+
+    /* dpad */
+    .dpad-grid { max-width: 230px; gap: 8px; }
+    .cbtn { font-size: 1.3rem; border-radius: 3px; }
+
+    /* motor rows */
+    .motor-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mbtn { font-size: 0.65rem; padding: 0.75rem 0.3rem; }
+
+    /* speed slider */
+    .spd-ticks { font-size: 0.5rem; }
+
+    /* sweep */
+    .sweep-grid { grid-template-columns: 1fr; }
+    .inp-group input { font-size: 0.85rem; }
+
+    /* log */
+    #log { font-size: 0.65rem; max-height: 100px; }
+
+    /* obs banner */
+    .obs-msg { font-size: 0.65rem; }
+
+    footer { padding: 1.5rem 1rem; }
+  }
+
+  /* ── RESPONSIVE — TINY (≤ 380px) ── */
+  @media (max-width: 380px) {
+    .telem-bar { grid-template-columns: repeat(2, 1fr); }
+    .dpad-grid { max-width: 200px; gap: 6px; }
+    .batt-shell { width: 36px; height: 16px; }
+    .batt-pct { font-size: 1rem; }
   }
 </style>
 </head>
@@ -632,8 +729,18 @@
       <span id="status-text">CONNECTING</span>
     </div>
     <button class="theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="Toggle dark/light mode">☀️</button>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">☰</button>
   </div>
 </nav>
+
+<!-- MOBILE NAV DRAWER -->
+<div class="nav-drawer" id="nav-drawer" role="dialog" aria-modal="true">
+  <button class="nav-drawer-close" id="nav-drawer-close" aria-label="Close menu">✕</button>
+  <a href="smartmow.html">Home</a>
+  <a href="smartmow.html#features">Features</a>
+  <a href="smartmow.html#specs">Specs</a>
+  <a href="smartmow.html#safety">Safety</a>
+</div>
 
 <!-- PAGE HEADER -->
 <div class="page-header">
@@ -821,6 +928,21 @@ themeToggle.addEventListener('click', () => {
 
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme) applyTheme(savedTheme);
+
+// =============================================================================
+//  MOBILE NAV DRAWER
+// =============================================================================
+const navHamburger  = document.getElementById('nav-hamburger');
+const navDrawer     = document.getElementById('nav-drawer');
+const navDrawerClose = document.getElementById('nav-drawer-close');
+
+function openDrawer()  { navDrawer.classList.add('open');    document.body.style.overflow = 'hidden'; }
+function closeDrawer() { navDrawer.classList.remove('open'); document.body.style.overflow = ''; }
+
+navHamburger.addEventListener('click', openDrawer);
+navDrawerClose.addEventListener('click', closeDrawer);
+navDrawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+navDrawer.addEventListener('click', e => { if (e.target === navDrawer) closeDrawer(); });
 
 // =============================================================================
 //  CONFIG

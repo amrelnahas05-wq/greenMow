@@ -552,30 +552,113 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes scroll { to { transform: translateX(-50%); } }
 
-  /* ── RESPONSIVE ── */
+  /* ── NAV HAMBURGER ── */
+  .nav-hamburger {
+    display: none;
+    background: none; border: 1px solid var(--border-mid);
+    color: var(--gold); font-size: 1.3rem;
+    width: 38px; height: 38px;
+    cursor: pointer; align-items: center; justify-content: center;
+    flex-shrink: 0; border-radius: 3px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .nav-hamburger:hover { border-color: var(--gold); background: rgba(240,192,64,0.07); }
+
+  .nav-drawer {
+    display: none;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(8,12,8,0.97);
+    z-index: 99;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 2.5rem;
+  }
+  .nav-drawer.open { display: flex; }
+  .nav-drawer a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem; letter-spacing: 4px;
+    color: var(--text); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-drawer a:hover { color: var(--gold); }
+  .nav-drawer-close {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    background: none; border: none; color: var(--muted);
+    font-size: 2rem; cursor: pointer; line-height: 1;
+  }
+
+  /* ── RESPONSIVE — TABLET (≤ 900px) ── */
   @media (max-width: 900px) {
     nav ul { display: none; }
     nav { padding: 1rem 1.5rem; }
-    #hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 3rem; }
-    .hero-right { justify-content: flex-start; }
-    .hero-visual { width: 280px; height: 280px; }
+    .nav-hamburger { display: flex; }
+    .nav-cta { display: none; }
+
+    #hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 2rem; }
+    .hero-right { justify-content: center; }
+    .hero-visual { width: 260px; height: 260px; }
     .sb1, .sb2, .sb3 { display: none; }
+
     section { padding: 4rem 1.5rem; }
+
+    /* specs inline grid */
+    #specs > div { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+
     .features-grid { grid-template-columns: 1fr 1fr; }
     .safety-grid { grid-template-columns: 1fr; }
     .metrics-row { grid-template-columns: repeat(2, 1fr); }
-    .roadmap-track { grid-template-columns: 1fr 1fr; }
+    .roadmap-track { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     .roadmap-track::before { display: none; }
-    .market-inner { grid-template-columns: 1fr; }
+    .market-inner { grid-template-columns: 1fr; gap: 2rem; }
     .team-grid { grid-template-columns: repeat(3, 1fr); }
+
     footer { flex-direction: column; gap: 1rem; text-align: center; }
     .footer-uni { text-align: center; }
   }
+
+  /* ── RESPONSIVE — MOBILE (≤ 560px) ── */
   @media (max-width: 560px) {
+    nav { padding: 0.9rem 1rem; }
+    .logo { font-size: 1.4rem; letter-spacing: 2px; }
+
+    #hero { padding: 6rem 1rem 2.5rem; gap: 1.5rem; }
+    .hero-title { font-size: clamp(3.5rem, 16vw, 5rem); }
+    .hero-tag { font-size: 0.58rem; }
+    .hero-sub { font-size: 0.88rem; }
+    .hero-btns { flex-direction: column; gap: 0.75rem; }
+    .btn-primary, .btn-ghost { width: 100%; text-align: center; }
+    .hero-visual { width: 220px; height: 220px; }
+
+    section { padding: 3rem 1rem; }
+    .section-title { font-size: clamp(2.2rem, 10vw, 3rem); }
+
     .features-grid { grid-template-columns: 1fr; }
-    .team-grid { grid-template-columns: repeat(2, 1fr); }
+    .feat-card { padding: 1.8rem 1.4rem; }
+
+    .spec-row { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+    .spec-val { font-size: 1rem; }
+    .code-block { font-size: 0.65rem; padding: 1.2rem; overflow-x: auto; }
+
     .metrics-row { grid-template-columns: 1fr 1fr; }
-    .hero-btns { flex-direction: column; }
+    .metric { padding: 1.8rem 0.8rem; }
+    .metric-num { font-size: 2.8rem; }
+
+    .safety-grid { grid-template-columns: 1fr; }
+    .roadmap-track { grid-template-columns: 1fr; }
+
+    /* market inline mini-grid */
+    #market [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr 1fr !important; }
+
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+    .team-name { font-size: 0.65rem; }
+
+    footer { padding: 1.8rem 1rem; font-size: 0.6rem; }
+  }
+
+  /* ── RESPONSIVE — TINY (≤ 380px) ── */
+  @media (max-width: 380px) {
+    .metrics-row { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: 1fr 1fr; }
+    .hero-visual { width: 180px; height: 180px; }
   }
 </style>
 </head>
@@ -595,8 +678,20 @@
   <div class="nav-right">
     <button class="theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="Toggle dark/light mode">☀️</button>
     <button class="nav-cta" onclick="window.location.href='control.html'">⚙ Control Panel</button>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">☰</button>
   </div>
 </nav>
+
+<!-- MOBILE NAV DRAWER -->
+<div class="nav-drawer" id="nav-drawer" role="dialog" aria-modal="true">
+  <button class="nav-drawer-close" id="nav-drawer-close" aria-label="Close menu">✕</button>
+  <a href="#features" class="drawer-link">Features</a>
+  <a href="#specs" class="drawer-link">Specs</a>
+  <a href="#safety" class="drawer-link">Safety</a>
+  <a href="#roadmap" class="drawer-link">Roadmap</a>
+  <a href="#team" class="drawer-link">Team</a>
+  <a href="control.html" class="drawer-link" style="color:var(--gold);">⚙ Control Panel</a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -954,6 +1049,7 @@
 </footer>
 
 <script>
+  // ── THEME ──
   const toggle = document.getElementById('theme-toggle');
   const root   = document.documentElement;
 
@@ -962,14 +1058,32 @@
     toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
     localStorage.setItem('theme', theme);
   }
-
   toggle.addEventListener('click', () => {
     applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
   });
-
-  // Restore saved preference
   const saved = localStorage.getItem('theme');
   if (saved) applyTheme(saved);
+
+  // ── MOBILE NAV DRAWER ──
+  const hamburger = document.getElementById('nav-hamburger');
+  const drawer    = document.getElementById('nav-drawer');
+  const drawerClose = document.getElementById('nav-drawer-close');
+
+  function openDrawer()  { drawer.classList.add('open');    document.body.style.overflow = 'hidden'; }
+  function closeDrawer() { drawer.classList.remove('open'); document.body.style.overflow = ''; }
+
+  hamburger.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+
+  // Close on any drawer link tap
+  drawer.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', closeDrawer);
+  });
+
+  // Close on backdrop click (outside links)
+  drawer.addEventListener('click', e => {
+    if (e.target === drawer) closeDrawer();
+  });
 </script>
 </body>
 </html>
